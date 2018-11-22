@@ -1,2 +1,2 @@
 # b_smart
-Be smart
+To be smart
