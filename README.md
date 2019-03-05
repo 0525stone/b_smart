@@ -1,5 +1,4 @@
 # b_smart
-To be smart
 
 arcube_projectpoints used 'projectpoints' function.
 
