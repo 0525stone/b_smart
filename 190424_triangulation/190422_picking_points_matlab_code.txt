@@ -1,0 +1,4 @@
+a = imread('image1.png'); // image0.png또는
+imshow(a)
+[X,Y] = ginput(8) // 점은 많을 수록 나중에 plot시 확인 가능
+t = [X,Y,ones(size(X))]
