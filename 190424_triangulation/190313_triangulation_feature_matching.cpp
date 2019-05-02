@@ -1,10 +1,10 @@
-// 2019.03.14 È­¸éÀ¸·Î ¸ÅÄªÁ¡µé º¸ÀÓ +ÀÌÁ¦ µÊ 2019.03.11
+// 2019.03.14 í™”ë©´ìœ¼ë¡œ ë§¤ì¹­ì ë“¤ ë³´ì„ +ì´ì œ ë¨ 2019.03.11
 #include "opencv_all.hpp"
 #include "opencv2/opencv.hpp" 
 #include <cstdio>
 #include <iostream>  
 //#include "opencv2/opencv.hpp"  
-//#include <opencv2/sfm/numeric.hpp>		// ³»°¡ Ãß°¡ÇÑ°Å...(ÀÓÀÇ·Î) eigen/coreÀÌ ¾ø´Ù´Âµ¥...
+//#include <opencv2/sfm/numeric.hpp>		// ë‚´ê°€ ì¶”ê°€í•œê±°...(ì„ì˜ë¡œ) eigen/coreì´ ì—†ë‹¤ëŠ”ë°...
 
 using namespace cv;
 using namespace std;
@@ -18,25 +18,25 @@ int main(void)
 	// c.f. You need to run 'image_formation.cpp' to generate point observation.
 	//      You can apply Gaussian noise by change value of 'camera_noise' if necessary.
 	std::vector<cv::Point2d> points0, points1;
-	//	cv::Mat image1 = cv::imread("data/hill01.jpg");	// image µÎ °³ ÀĞ¾î¿À±â			 ../data/»çÁø or data/»çÁø ¹¹°¡ ´Ş¶ó...
-	//	cv::Mat image2 = cv::imread("data/hill02.jpg");	// ³ªÁß¿£ ³»°¡ Âï¾î¼­ ÇØº¸ÀÚ
+	//	cv::Mat image1 = cv::imread("data/hill01.jpg");	// image ë‘ ê°œ ì½ì–´ì˜¤ê¸°			 ../data/ì‚¬ì§„ or data/ì‚¬ì§„ ë­ê°€ ë‹¬ë¼...
+	//	cv::Mat image2 = cv::imread("data/hill02.jpg");	// ë‚˜ì¤‘ì—” ë‚´ê°€ ì°ì–´ì„œ í•´ë³´ì
 
 	double scale = 0.3;
 	printf("load ? \n");
-	//cv::resize(image1_o, image1, cv::Size(image1_o.cols*scale, image1_o.rows*scale), 0, 0, 0);  //CV_INTER_NN ÀÌ°Ô ¹¹¾ß
+	//cv::resize(image1_o, image1, cv::Size(image1_o.cols*scale, image1_o.rows*scale), 0, 0, 0);  //CV_INTER_NN ì´ê²Œ ë­ì•¼
 	//cv::resize(image2_o, image2, cv::Size(image2_o.cols*scale, image2_o.rows*scale), 0, 0, 0);
-	cv::Mat image1 = cv::imread("data/sample05.jpg");	// ³»°¡ Âï¾î¼­ ÇØº¼·¨´Âµ¥ Àß¾ÈµÈ´Ù... ¿øÀÎÃ£±â
+	cv::Mat image1 = cv::imread("data/sample05.jpg");	// ë‚´ê°€ ì°ì–´ì„œ í•´ë³¼ë¬ëŠ”ë° ì˜ì•ˆëœë‹¤... ì›ì¸ì°¾ê¸°
 	cv::Mat image2 = cv::imread("data/sample06.jpg");	// 
 	if (image1.empty() || image2.empty()) return -1;
 	cv::resize(image1, image1, cv::Size(image1.cols*scale, image1.rows*scale), 0, 0, 0);
 	cv::resize(image2, image2, cv::Size(image2.cols*scale, image2.rows*scale), 0, 0, 0);
 	printf("load complete");
 
-	cv::Ptr<cv::FeatureDetector> fdetector = cv::BRISK::create();	// feature detector(¿§Áö³ª ÄÚ³Ê °ËÃâ)
+	cv::Ptr<cv::FeatureDetector> fdetector = cv::BRISK::create();	// feature detector(ì—£ì§€ë‚˜ ì½”ë„ˆ ê²€ì¶œ)
 	std::vector<cv::KeyPoint> keypoint1, keypoint2;
 	cv::Mat descriptor1, descriptor2;
 
-	fdetector->detectAndCompute(image1, cv::Mat(), keypoint1, descriptor1);  // 2048½ÖÀÇ Á¡µéÀ» °ËÃâ...(ÀÌ°É ·£´ıÇÏ°Ô 100°³Á¤µµ¸¸ ²¨³»¼­ ÇÏ´Â)
+	fdetector->detectAndCompute(image1, cv::Mat(), keypoint1, descriptor1);  // 2048ìŒì˜ ì ë“¤ì„ ê²€ì¶œ...(ì´ê±¸ ëœë¤í•˜ê²Œ 100ê°œì •ë„ë§Œ êº¼ë‚´ì„œ í•˜ëŠ”)
 	fdetector->detectAndCompute(image2, cv::Mat(), keypoint2, descriptor2);
 	cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
 	std::vector<cv::DMatch> match;
@@ -50,9 +50,9 @@ int main(void)
 	cv::Mat inlier_mask;
 	//cv::Mat H = cv::findHomography(points1, points0, inlier_mask, cv::RANSAC);
 
-	// ÀÓÀÇÀÇ Á¡ µÎ °³·Î Á÷Á¢ fundamental matrix ±¸ÇÏ±â(Homography, a_skew ÇÊ¿ä)
-	//std::vector<cv::Point2d> x_ = points1.operator[];	vectorµµ at.()·Î...
-	//cv::Mat x_s = cv::sfm::skew(x_);	// ¾ê°¡ ¾ÈµéÀ½...
+	// ì„ì˜ì˜ ì  ë‘ ê°œë¡œ ì§ì ‘ fundamental matrix êµ¬í•˜ê¸°(Homography, a_skew í•„ìš”)
+	//std::vector<cv::Point2d> x_ = points1.operator[];	vectorë„ at.()ë¡œ...
+	//cv::Mat x_s = cv::sfm::skew(x_);	// ì–˜ê°€ ì•ˆë“¤ìŒ...
 	cv::Mat H = cv::findHomography(points0, points1);
 	double a1 = points0.at(0).x;
 	double a2 = points0.at(0).y;
@@ -61,17 +61,17 @@ int main(void)
 	cv::Mat F_ = a_skew*H;
 
 	// Esitmate relative pose of two views
-	cv::Mat F = cv::findFundamentalMat(points0, points1, cv::FM_8POINT);	// homogeneous¸¦ °¡Á¤ÇÏ°í Çª´Â °Çµ¥?
+	cv::Mat F = cv::findFundamentalMat(points0, points1, cv::FM_8POINT);	// homogeneousë¥¼ ê°€ì •í•˜ê³  í‘¸ëŠ” ê±´ë°?
 	cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
 	cv::Mat E = K.t() * F * K;
 	cv::Mat R, t;
 	cv::recoverPose(E, points0, points1, K, R, t);
 
-	//	cv::Mat check0 = cv::Mat::eye(3, 4, CV_64F);	// eye´Â 3*3 ´ÜÀ§Çà·Ä¿¡ 0,0,0 ¿­Ãß°¡
+	//	cv::Mat check0 = cv::Mat::eye(3, 4, CV_64F);	// eyeëŠ” 3*3 ë‹¨ìœ„í–‰ë ¬ì— 0,0,0 ì—´ì¶”ê°€
 	// Reconstruct 3D points of 'box.xyz' (triangulation)
-	cv::Mat P0 = K * cv::Mat::eye(3, 4, CV_64F);	// Mat Å¬·¡½º Ãâ·ÂÀº ¾îÄÉÇÏ³ª...
+	cv::Mat P0 = K * cv::Mat::eye(3, 4, CV_64F);	// Mat í´ë˜ìŠ¤ ì¶œë ¥ì€ ì–´ì¼€í•˜ë‚˜...
 	cv::Mat Rt, X;
-	//	cout << P0.at<double >(0, 0) << endl;			// Ãâ·Â ¾ÈµÊ... µğ¹ö±ëÀ¸·Î È®ÀÎÇÔ
+	//	cout << P0.at<double >(0, 0) << endl;			// ì¶œë ¥ ì•ˆë¨... ë””ë²„ê¹…ìœ¼ë¡œ í™•ì¸í•¨
 	cv::hconcat(R, t, Rt);
 	cv::Mat P1 = K * Rt;
 	cv::triangulatePoints(P0, P1, points0, points1, X);
@@ -87,7 +87,7 @@ int main(void)
 	for (int c = 0; c < X.cols; c++)
 		//printf("working");
 		fprintf(fout, "%f %f %f\n", X.at<double>(0, c), X.at<double>(1, c), X.at<double>(2, c));
-	fclose(fout);		// Ã¢À¸·Î Ãâ·ÂÇÏ´Â°Ô ¾Æ´Ï¶ó ÆÄÀÏ·Î ÀúÀåµÇ¾îÀÖÀ½(boxÀÇ Á¡µéÀÇ ½ÇÁ¦ À§Ä¡)
+	fclose(fout);		// ì°½ìœ¼ë¡œ ì¶œë ¥í•˜ëŠ”ê²Œ ì•„ë‹ˆë¼ íŒŒì¼ë¡œ ì €ì¥ë˜ì–´ìˆìŒ(boxì˜ ì ë“¤ì˜ ì‹¤ì œ ìœ„ì¹˜)
 
 
 	// Show the merged image
@@ -102,7 +102,7 @@ int main(void)
 
 
 
-	// ¿©±âºÎÅÍ ³»°¡ ÇÑ ¹ø Á÷Á¢ ÇØº¸±â
+	// ì—¬ê¸°ë¶€í„° ë‚´ê°€ í•œ ë²ˆ ì§ì ‘ í•´ë³´ê¸°
 	cv::Mat P0_1T = P0.row(0);
 	cv::Mat P0_2T = P0.row(1);
 	cv::Mat P0_3T = P0.row(2);
@@ -128,21 +128,21 @@ int main(void)
 		A.push_back(A0);
 		A.push_back(A1);
 		A.push_back(A2);
-		A.push_back(A3);		// µğ¹ö±ëÀ¸·Î È®ÀÎÇÏ´Âµ¥, A´Â ¿Ö »ç¶óÁö´Â°ÅÁö...
-		// AÀÇ singular value ±¸ÇÏ´Â°Å ÇÊ¿ä.
+		A.push_back(A3);		// ë””ë²„ê¹…ìœ¼ë¡œ í™•ì¸í•˜ëŠ”ë°, AëŠ” ì™œ ì‚¬ë¼ì§€ëŠ”ê±°ì§€...
+		// Aì˜ singular value êµ¬í•˜ëŠ”ê±° í•„ìš”.
 		cv::Mat matrW(4, 1, CV_64F);
 		cv::Mat matrU(4, 4, CV_64F);
-		cv::Mat matrV(4, 4, CV_64F);	// matrV¿¡ ¸Â´Â °ªÀÌ ³ª¿À´Â°Ç È®ÀÎµÊ
+		cv::Mat matrV(4, 4, CV_64F);	// matrVì— ë§ëŠ” ê°’ì´ ë‚˜ì˜¤ëŠ”ê±´ í™•ì¸ë¨
 		cv::SVD::compute(A, matrW, matrU, matrV);
-		// singular value¸¦ ÀúÀåÇÒ X_ µµ ÇÊ¿ä
-		// ¿¹Á¦ : cvmSet(mat1, 0, 0, 2.0f); // mat1 ¸ÅÆ®¸¯½ºÀÇ (0, 0) Ç×¿¡ 2.0f °ªÀ» Áı¾î³Ö´Â´Ù
+		// singular valueë¥¼ ì €ì¥í•  X_ ë„ í•„ìš”
+		// ì˜ˆì œ : cvmSet(mat1, 0, 0, 2.0f); // mat1 ë§¤íŠ¸ë¦­ìŠ¤ì˜ (0, 0) í•­ì— 2.0f ê°’ì„ ì§‘ì–´ë„£ëŠ”ë‹¤
 		printf("once\n");
-		// MatÀÇ ¿ä¼Ò Á¢±ÙÀÌ Àß¸øµÈµí...
+		// Matì˜ ìš”ì†Œ ì ‘ê·¼ì´ ì˜ëª»ëœë“¯...
 
 		printf("%f\n", matrV.at<double>(0, 0));
-		// vector¿¡´Ù°¡ ÇÏ³ªÀÇ º¤ÅÍ Ãß°¡¸¦ ¾îÄÉÇÏ³Ä°í....
+		// vectorì—ë‹¤ê°€ í•˜ë‚˜ì˜ ë²¡í„° ì¶”ê°€ë¥¼ ì–´ì¼€í•˜ëƒê³ ....
 		X_real.push_back(cv::Point3d(matrV.at<double>(3, 0) / matrV.at<double>(3, 3), matrV.at<double>(3, 1) / matrV.at<double>(3, 3), matrV.at<double>(3, 2) / matrV.at<double>(3, 3)));
-		//	X_real[i].x = 3.0;												// ÁÂÇ¥·Î´Â »©¿Ã¶§¸¸ °¡´É. °ª ¼±¾ğ½Ã¿¡´Â push_back
+		//	X_real[i].x = 3.0;												// ì¢Œí‘œë¡œëŠ” ë¹¼ì˜¬ë•Œë§Œ ê°€ëŠ¥. ê°’ ì„ ì–¸ì‹œì—ëŠ” push_back
 		//	X_real[i].y = matrV.at<float>(3, 1) / matrV.at<float>(3, 3);
 		//	X_real[i].z = matrV.at<float>(3, 2) / matrV.at<float>(3, 3);
 	}
@@ -152,7 +152,7 @@ int main(void)
 	for (int c = 0; c < points0.size(); c++)
 		//printf("working");
 		fprintf(fout1, "%f %f %f\n", X_real[c].x, X_real[c].y, X_real[c].z);
-	fclose(fout1);		// Ã¢À¸·Î Ãâ·ÂÇÏ´Â°Ô ¾Æ´Ï¶ó ÆÄÀÏ·Î ÀúÀåµÇ¾îÀÖÀ½(boxÀÇ Á¡µéÀÇ ½ÇÁ¦ À§Ä¡)
+	fclose(fout1);		// ì°½ìœ¼ë¡œ ì¶œë ¥í•˜ëŠ”ê²Œ ì•„ë‹ˆë¼ íŒŒì¼ë¡œ ì €ì¥ë˜ì–´ìˆìŒ(boxì˜ ì ë“¤ì˜ ì‹¤ì œ ìœ„ì¹˜)
 	printf("done\n");
 
 	return 0;
